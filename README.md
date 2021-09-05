@@ -1,6 +1,44 @@
-Zeller is starting a computer store. You have been engaged to build the checkout system. We will start with the following products in our catalogue
+# Store Promo
+## Concept
+The aim of this checkout module is to be configurable to accomodate future changes. In order to achieve this, we break down the steps required to calculate total and allow rules to be executed as "middleware" on each of those steps.
+
+The checkout module has the following data structure:
+```
+total = {
+  lineItems: [
+    {
+      amount: ..,
+      discount: ..
+      item: {
+        product: ..,
+        discount: ..
+      }
+    },
+    ...
+  ],
+  discount
+}
+```
+
+Deals/offers are implemented by rules that calculate `discount` value on various level. There are 4 types of rules:
+- Product level rule: calculate the value of `total.lineItems[..].item.discount`. This rule will handle deals such as half price, or flat price discount.
+- Subtotal/line item level rule: calculate the value of `total.lineItems[..].discount`. This rule is for when the deal depends on the amount of items purchased, such as bulk discount or buy 3 for the price of 2 deals.
+- Pre-total level rule: calculate the value of `total.lineItems[..].discount`. This rule is executed after subtotal rule, and is meant for a more complex condition that affects multiple line items. Example: buying 4 toothbrush to get discount on toothpaste, bulk discount applied when buying any 4 ice cream, etc.
+- Total level rule: calculate the value of `total.discount`. This rule is meant as a global discount for the entire transaction.
 
 
+## Running the module
+Install required dependencies
+```
+yarn
+```
+Going through sample scenarios
+```
+yarn test
+```
+
+## Example
+With the following products in our catalogue:
 | SKU     | Name        | Price    |
 | --------|:-----------:| --------:|
 | ipd     | Super iPad  | $549.99  |
@@ -13,8 +51,6 @@ As we're launching our new computer store, we would like to have a few opening d
 - we're going to have a 3 for 2 deal on Apple TVs. For example, if you buy 3 Apple TVs, you will pay the price of 2 only
 - the brand new Super iPad will have a bulk discounted applied, where the price will drop to $499.99 each, if someone buys more than 4
 
-As our Sales manager is quite indecisive, we want the pricing rules to be as flexible as possible as they can change in the future with little notice.
-
 Our checkout system can scan items in any order.
 
 The interface to our checkout looks like this (shown in typescript):
@@ -26,9 +62,7 @@ The interface to our checkout looks like this (shown in typescript):
   co.total();
 ```
 
-Your task is to implement a checkout system that fulfils the requirements described above.
-
-Example scenarios
+### Example scenarios
 -----------------
 
 SKUs Scanned: atv, atv, atv, vga
@@ -36,13 +70,3 @@ Total expected: $249.00
 
 SKUs Scanned: atv, ipd, ipd, atv, ipd, ipd, ipd
 Total expected: $2718.95
-
-Notes on implementation:
-
-- use **Typescript**
-- try not to spend more than 2 hours maximum. (We don't want you to lose a weekend over this!)
-- don't build guis etc, we're more interested in your approach to solving the given task, not how shiny it looks
-- don't worry about making a command line interface to the application
-- don't use any frameworks
-
-When you've finished, send through the link to your github-repo.

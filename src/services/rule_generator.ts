@@ -82,7 +82,9 @@ export function createBuyNGetBonusMDeal(boughtProductSku: string, n: number, bon
             if (boughtSku > -1) {
                 const bonusSku = subtotals.findIndex(item => item.item.product.sku === bonusProductSku)
 
-                newSubtotal[bonusSku].discount += Math.floor(subtotals[boughtSku].amount / n) * m * (subtotals[bonusSku].item.product.price - subtotals[bonusSku].item.discount)
+                if (bonusSku > -1) {
+                    newSubtotal[bonusSku].discount += Math.floor(subtotals[boughtSku].amount / n) * m * (subtotals[bonusSku].item.product.price - subtotals[bonusSku].item.discount)
+                }
             }
             
             return newSubtotal
